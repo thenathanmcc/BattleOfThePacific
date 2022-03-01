@@ -1,0 +1,160 @@
+[gd_scene load_steps=14 format=2]
+
+[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://NPCPlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://PacificScene.gd" type="Script" id=3]
+
+[sub_resource type="CubeMesh" id=1]
+
+[sub_resource type="Shader" id=4]
+code = "shader_type spatial;
+render_mode blend_mix, specular_phong;
+
+uniform float speed : hint_range(-1,1) = 0.0;
+
+//colors
+uniform sampler2D noise1; //add Godot noise here
+uniform sampler2D noise2; //add Godot noise here
+uniform sampler2D normalmap : hint_normal; //add Godot noise here, enable as_normalmap
+uniform vec4 color : hint_color;
+uniform vec4 edge_color : hint_color;
+
+//foam
+uniform float edge_scale = 0.25;
+uniform float near = 0.1;
+uniform float far = 100f;
+
+//waves
+uniform vec2 wave_strengh = vec2(0.5, 0.25);
+uniform vec2 wave_frequency = vec2(12.0, 12.0);
+uniform vec2 time_factor = vec2(1.0, 2.0);
+
+
+
+float rim(float depth){
+	depth = 2f * depth - 1f;
+	return near * far / (far + depth * (near - far));
+}
+
+
+float waves(vec2 pos, float time){
+	return (wave_strengh.y * sin(pos.y * wave_frequency.y + time * time_factor.y)) + (wave_strengh.x * sin(pos.x * wave_frequency.x + time * time_factor.x));
+}
+
+
+void vertex(){
+	VERTEX.y += waves(VERTEX.xy, TIME);
+}
+
+
+void fragment(){
+	float time = TIME * speed;
+	vec3 n1 = texture(noise1, UV + time).rgb;
+	vec3 n2 = texture(noise2, UV - time * 0.2).rgb;
+	
+	vec2 uv_movement = UV * 4f;
+	uv_movement +=  sin(TIME * speed  * 4f);
+	
+	float sum = (n1.r + n2.r) - 1f;
+	
+	
+	float z_depth = rim(texture(DEPTH_TEXTURE, SCREEN_UV).x);
+	float z_pos = rim(FRAGCOORD.z);
+	float diff = z_depth - z_pos;
+	
+	vec2 displacement = vec2(sum * 0.05);
+	diff += displacement.x * 50f;
+	
+	
+	vec4 col = mix(edge_color, color, step(edge_scale, diff));
+	
+	vec4 alpha = vec4(1.0);
+	alpha = texture(SCREEN_TEXTURE, SCREEN_UV + displacement);
+	
+	
+	float fin = 0.0;
+	if (sum > 0.0 && sum < 0.4) fin = 0.1;
+	if (sum > 0.4 && sum < 0.8) fin = 0.0;
+	if (sum > 0.8) fin = 1f;
+	
+	ALBEDO = vec3(fin) + mix(alpha.rgb, col.rgb, color.a);
+	
+	NORMALMAP = texture(normalmap, uv_movement).rgb;
+	ROUGHNESS = 0.1;
+	SPECULAR = 1f;
+}"
+
+[sub_resource type="NoiseTexture" id=5]
+width = 1024
+height = 1024
+
+[sub_resource type="NoiseTexture" id=6]
+width = 1024
+height = 1024
+
+[sub_resource type="OpenSimplexNoise" id=7]
+
+[sub_resource type="NoiseTexture" id=8]
+width = 1024
+height = 1024
+seamless = true
+as_normalmap = true
+noise = SubResource( 7 )
+
+[sub_resource type="ShaderMaterial" id=9]
+shader = SubResource( 4 )
+shader_param/speed = 0.001
+shader_param/color = Color( 0.141176, 0.207843, 0.47451, 1 )
+shader_param/edge_color = Color( 0.0509804, 0.321569, 0.513726, 1 )
+shader_param/edge_scale = 0.25
+shader_param/near = 0.1
+shader_param/far = 100.0
+shader_param/wave_strengh = Vector2( 0.5, 0.25 )
+shader_param/wave_frequency = Vector2( 12, 12 )
+shader_param/time_factor = Vector2( 1, 2 )
+shader_param/noise1 = SubResource( 5 )
+shader_param/noise2 = SubResource( 6 )
+shader_param/normalmap = SubResource( 8 )
+
+[sub_resource type="BoxShape" id=3]
+
+[sub_resource type="ProceduralSky" id=10]
+ground_bottom_color = Color( 0.188235, 0.443137, 0.701961, 1 )
+ground_horizon_color = Color( 0.321569, 0.388235, 0.501961, 1 )
+
+[sub_resource type="Environment" id=11]
+background_mode = 2
+background_sky = SubResource( 10 )
+fog_enabled = true
+ssao_enabled = true
+
+[node name="PacificScene" type="Spatial"]
+script = ExtResource( 3 )
+
+[node name="Water" type="StaticBody" parent="."]
+transform = Transform( 1000, 0, 0, 0, 0.5, 0, 0, 0, 1000, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Water"]
+mesh = SubResource( 1 )
+material/0 = SubResource( 9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Water"]
+transform = Transform( 1, 0, 0, 0, 10, 0, 0, 0, 1, 0, 0, 0 )
+shape = SubResource( 3 )
+
+[node name="PlayerContainer" type="Spatial" parent="."]
+
+[node name="Player" parent="PlayerContainer" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 53.0469, -88.0208 )
+
+[node name="NPCPlayer" parent="PlayerContainer" instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 54.1485, -140.482 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="."]
+transform = Transform( 1, 0, 0, 0, -0.517176, 0.855879, 0, -0.855879, -0.517176, 0, 28.1733, -48.693 )
+shadow_enabled = true
+
+[node name="ProjectileContainer" type="Spatial" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource( 11 )
