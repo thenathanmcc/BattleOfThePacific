@@ -20,8 +20,8 @@ const MAX_HEALTH_POINTS : int = 100
 var health_points : int = 100
 
 # Projectile variables
-const MAX_TOTAL_AMMO_COUNT : int = 800
 const MAX_AMMO_COUNT : int = 200
+const MAX_RESERVE_AMMO_COUNT : int = 600
 var ammo_count : int = 200
 var reserve_ammo_count : int = 200
 var projectile_spawn_count : int = 0
@@ -72,15 +72,49 @@ func get_ammo_count() -> int:
 func get_reserve_ammo_count() -> int:
 	return reserve_ammo_count
 
+func get_total_ammo_count() -> int:
+	return ammo_count + reserve_ammo_count
+
+func increase_ammo_count(amount : int) -> void:
+	var reserve_ammo : int = get_reserve_ammo_count()
+	if reserve_ammo == MAX_RESERVE_AMMO_COUNT:
+		return
+	elif reserve_ammo + amount >= MAX_RESERVE_AMMO_COUNT:
+		reserve_ammo_count = MAX_RESERVE_AMMO_COUNT
+	else:
+		reserve_ammo_count += amount
+	
+	ui_update_ammo_reserve_label()
+	
+	#check if we need to reload
+	if get_ammo_count() == 0:
+		_reload()
+
 func get_health_points() -> int:
 	return health_points
 
-func _input(event):
+func increase_health_points (amount : int) -> void:
+	if get_health_points() + amount > MAX_HEALTH_POINTS:
+		health_points = MAX_HEALTH_POINTS
+	else:
+		health_points += amount
+	
+	ui_update_health_bar()
+
+func deal_damage(amount : int) -> void:
+	health_points -= amount
+	if health_points < 0:
+		health_points = 0
+		# Trigger death scenario
+		
+	ui_update_health_bar()
+
+func _input(event : InputEvent):
 	if event is InputEventMouseMotion:
 		pitch_input = (event.relative.y * 0.05)
 		roll_input = (-event.relative.x * 0.05)
 
-func _process(delta):
+func _process(delta : float):
 	if Input.is_action_pressed("shoot"):
 		_shoot_projectile()
 	
@@ -111,6 +145,8 @@ func _process(delta):
 	roll_input = 0
 
 func _reload() -> void:
+	if reserve_ammo_count == 0:
+		return
 	print("Reloading")
 	reloading = true
 	reload_timer.start()
@@ -120,6 +156,9 @@ func ui_update_ammo_count() -> void:
 
 func ui_update_ammo_reserve_label() -> void:
 	ingame_ui.update_reserve_ammo_count_label(str(reserve_ammo_count))
+
+func ui_update_health_bar() -> void:
+	print("Updating health bar UI")
 
 func _shoot_projectile() -> void:
 	if reloading:
@@ -145,7 +184,7 @@ func _shoot_projectile() -> void:
 		p.global_transform.basis = projectile_spawn_point1.global_transform.basis
 	else:
 		p.global_transform.origin = projectile_spawn_point2.global_transform.origin
-		p.global_transform.basis = projectile_spawn_point1.global_transform.basis
+		p.global_transform.basis = projectile_spawn_point2.global_transform.basis
 	p.velocity = -plane.global_transform.basis.z * p.initial_velocity
 	
 	ammo_count -= 1
@@ -159,9 +198,7 @@ func _shoot_projectile() -> void:
 #############
 
 func _on_reload_timeout():
-	if reserve_ammo_count == 0: 
-		return
-	elif reserve_ammo_count >= 200:
+	if reserve_ammo_count >= 200:
 		ammo_count = 200
 		reserve_ammo_count -= 200
 	else:

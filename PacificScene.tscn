@@ -1,8 +1,10 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://Player.tscn" type="PackedScene" id=1]
 [ext_resource path="res://NPCPlayer.tscn" type="PackedScene" id=2]
 [ext_resource path="res://PacificScene.gd" type="Script" id=3]
+[ext_resource path="res://AmmoSupply.tscn" type="PackedScene" id=4]
+[ext_resource path="res://HealthSupply.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CubeMesh" id=1]
 
@@ -158,3 +160,13 @@ shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 11 )
+
+[node name="AmmoSupplyContainer" type="Spatial" parent="."]
+
+[node name="AmmoSupply" parent="AmmoSupplyContainer" instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -91.0429, 55.8395, -122.818 )
+
+[node name="HealthSupplyContainer" type="Spatial" parent="."]
+
+[node name="HealthSupply" parent="HealthSupplyContainer" instance=ExtResource( 5 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 51.5418, -256.968 )

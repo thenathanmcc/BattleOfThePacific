@@ -5,7 +5,7 @@ signal exploded
 onready var forward_ray : RayCast = $RayCast
 
 export var initial_velocity = 450
-export var g = Vector3.DOWN * 9.8
+export var g = Vector3.DOWN * 5
 
 var velocity : Vector3 = Vector3.ZERO
 
@@ -19,8 +19,7 @@ func _ready():
 	life_timer.start() 
 
 func _configure_raycast() -> void:
-	#forward_ray.enabled = true
-	pass
+	forward_ray.enabled = true
 
 func _setup_life_timer() -> void:
 	life_timer = Timer.new()

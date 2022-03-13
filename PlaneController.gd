@@ -6,6 +6,7 @@ onready var projectile_spawn_point_1 : Position3D = $ProjectileSpawnPoint1
 onready var projectile_spawn_point_2 : Position3D = $ProjectileSpawnPoint2
 onready var plane_body : MeshInstance = $PlaneBody
 onready var plane_wings : MeshInstance = $PlaneWings
+onready var parent_player : Node = get_node("..")
 
 var min_flight_speed : float = 0
 var max_flight_speed : float = 50.0
@@ -25,6 +26,9 @@ func _ready():
 	# Set initial Velocity
 	forward_speed = min_flight_speed
 	target_speed = min_flight_speed
+
+func get_player_parent() -> Node:
+	return parent_player
 
 func get_forward_camera_target() -> Node:
 	return forward_camera_target
