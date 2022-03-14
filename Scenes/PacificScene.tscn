@@ -1,10 +1,10 @@
 [gd_scene load_steps=16 format=2]
 
-[ext_resource path="res://Player.tscn" type="PackedScene" id=1]
-[ext_resource path="res://NPCPlayer.tscn" type="PackedScene" id=2]
-[ext_resource path="res://PacificScene.gd" type="Script" id=3]
-[ext_resource path="res://AmmoSupply.tscn" type="PackedScene" id=4]
-[ext_resource path="res://HealthSupply.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/Player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/NPCPlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/PacificScene.gd" type="Script" id=3]
+[ext_resource path="res://Scenes/AmmoSupply.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Scenes/HealthSupply.tscn" type="PackedScene" id=5]
 
 [sub_resource type="CubeMesh" id=1]
 

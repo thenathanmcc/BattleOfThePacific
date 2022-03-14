@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://NPCPlayer.gd" type="Script" id=1]
-[ext_resource path="res://Plane.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scripts/NPCPlayer.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Plane.tscn" type="PackedScene" id=2]
 
 [node name="NPCPlayer" type="Spatial"]
 script = ExtResource( 1 )

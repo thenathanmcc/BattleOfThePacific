@@ -164,13 +164,15 @@ func _shoot_projectile() -> void:
 	if reloading:
 		return
 	
+	# Check if ammo available
 	if ammo_count == 0 and reserve_ammo_count != 0:
 		_reload()
 		return
 	elif ammo_count == 0 and reserve_ammo_count == 0:
-		print("Out of Ammo")
+		
 		return
 	
+	# This is to limit the rate of fire of the planes
 	if weapon_cooldown:
 		return
 	else:
