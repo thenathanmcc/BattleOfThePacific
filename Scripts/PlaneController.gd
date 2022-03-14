@@ -57,7 +57,3 @@ func move(pitch_input, turn_input, roll_input, delta):
 	
 	velocity = -global_transform.basis.z * forward_speed
 	velocity = move_and_slide(velocity, Vector3.UP)
-	
-	# Reset input values
-	pitch_input = 0
-	turn_input = 0
