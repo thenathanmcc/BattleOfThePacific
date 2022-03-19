@@ -127,7 +127,6 @@ ground_horizon_color = Color( 0.321569, 0.388235, 0.501961, 1 )
 [sub_resource type="Environment" id=11]
 background_mode = 2
 background_sky = SubResource( 10 )
-fog_enabled = true
 ssao_enabled = true
 
 [node name="PacificScene" type="Spatial"]
