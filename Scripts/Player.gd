@@ -190,6 +190,7 @@ func _shoot_projectile() -> void:
 	p.velocity = -plane.global_transform.basis.z * p.initial_velocity
 	
 	ammo_count -= 1
+	AudioManager.play("res://SoundEffects/SpitfireCannonShot.wav")
 	ui_update_ammo_count()
 	
 	projectile_spawn_count = (projectile_spawn_count + 1) % 2

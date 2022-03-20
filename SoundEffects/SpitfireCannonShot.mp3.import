@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/SpitfireCannonShot.mp3-73840e2193f22b1c2f93d7574ebe6e34.mp3str"
+
+[deps]
+
+source_file="res://SoundEffects/SpitfireCannonShot.mp3"
+dest_files=[ "res://.import/SpitfireCannonShot.mp3-73840e2193f22b1c2f93d7574ebe6e34.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
