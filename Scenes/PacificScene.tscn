@@ -128,6 +128,10 @@ ground_horizon_color = Color( 0.321569, 0.388235, 0.501961, 1 )
 background_mode = 2
 background_sky = SubResource( 10 )
 ssao_enabled = true
+glow_intensity = 2.31
+glow_blend_mode = 0
+glow_bicubic_upscale = true
+glow_high_quality = true
 
 [node name="PacificScene" type="Spatial"]
 script = ExtResource( 3 )

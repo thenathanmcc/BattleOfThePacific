@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://Models/Spitfire/SpitfireModel.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/PlaneController.gd" type="Script" id=2]
@@ -11,6 +11,13 @@ extents = Vector3( 0.357619, 0.890655, 2.22313 )
 
 [sub_resource type="Animation" id=5]
 resource_name = "DamageAnimation"
+
+[sub_resource type="Animation" id=9]
+resource_name = "EmitGunLight1"
+length = 0.1
+
+[sub_resource type="Animation" id=10]
+length = 0.001
 
 [sub_resource type="BoxShape" id=7]
 extents = Vector3( 0.657065, 0.506693, 1.89814 )
@@ -43,6 +50,8 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 2.5446, 0, -1.25306 )
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 anims/DamageAnimation = SubResource( 5 )
+anims/EmitGunLight1 = SubResource( 9 )
+anims/RESET = SubResource( 10 )
 
 [node name="SpitfireModel" parent="." instance=ExtResource( 1 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0 )
